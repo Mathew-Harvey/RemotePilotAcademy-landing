@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" role="img" aria-labelledby="t d" font-family="Inter, Segoe UI, system-ui, sans-serif">
+  <title id="t">The 3 nm rule around a controlled aerodrome, plan view</title>
+  <desc id="d">The 3 nautical mile (about 5.5 km) boundary is measured from the movement area: the runways, taxiways and aprons, not the terminal. Inside it you are outside the standard operating conditions. The approach and departure paths off each runway end are no fly unless CASA approves. Illustrative only.</desc>
+  <rect width="800" height="460" fill="#141920"/>
+  <!-- 3 nm boundary: the movement area grown by 3 nm (a stadium round the runway) -->
+  <path d="M250 70 L470 70 A160 160 0 0 1 470 390 L250 390 A160 160 0 0 1 250 70 Z" fill="#e9a23b" fill-opacity="0.10" stroke="#e9a23b" stroke-width="2" stroke-dasharray="9 6"/>
+  <!-- approach and departure paths -->
+  <path d="M250 222 L40 180 L40 280 L250 238 Z M470 222 L760 180 L760 280 L470 238 Z" fill="#f0524a" fill-opacity="0.22" stroke="#f0524a" stroke-width="1.5"/>
+  <!-- movement area -->
+  <rect x="250" y="222" width="220" height="16" rx="2" fill="#c3cad4"/>
+  <path d="M300 238 L300 262 L420 262 L420 238" fill="none" stroke="#8a94a2" stroke-width="6"/>
+  <rect x="330" y="262" width="60" height="24" fill="#8a94a2"/>
+  <text x="360" y="306" fill="#a7b1bf" font-size="12" text-anchor="middle">runway, taxiway, apron:</text>
+  <text x="360" y="321" fill="#a7b1bf" font-size="12" text-anchor="middle">the movement area</text>
+  <!-- measure arrow from runway end -->
+  <line x1="470" y1="230" x2="583" y2="117" stroke="#e6eaf0" stroke-width="1.5"/>
+  <path d="M575 117 L583 117 L583 125" fill="none" stroke="#e6eaf0" stroke-width="1.5"/>
+  <text x="522" y="160" fill="#e6eaf0" font-size="14" font-weight="600" text-anchor="end">3 nm (5.5 km)</text>
+  <text x="522" y="176" fill="#a7b1bf" font-size="12" text-anchor="end">from the nearest edge</text>
+  <text x="360" y="110" fill="#e9a23b" font-size="14" text-anchor="middle" font-weight="600">Inside 3 nm: outside the standard operating conditions</text>
+  <text x="360" y="128" fill="#a7b1bf" font-size="12" text-anchor="middle">needs a RePL, a ReOC and Part 101 MOS Chapter 4 or a CASA approval</text>
+  <text x="44" y="166" fill="#f0524a" font-size="12">approach and departure path:</text>
+  <text x="60" y="300" fill="#f0524a" font-size="12">no fly unless CASA approves</text>
+  <text x="760" y="440" fill="#6e7988" font-size="11" text-anchor="end">Illustrative, not to scale. The MOS Chapter 4 geometry is specific: read the current chapter.</text>
+</svg>

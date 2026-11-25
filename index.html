@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Remote Pilot Academy</title>
+<meta name="description" content="Remote Pilot Academy is a drone career game set in Western Australia. Walk out to the pad, fly paid commercial jobs under the real rules, and grow a company from a borrowed ute and a mini. A web demo is coming.">
+<meta name="theme-color" content="#0d1015">
+<link rel="icon" href="media/icon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://mathew-harvey.github.io/RemotePilotAcademy-landing/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Remote Pilot Academy">
+<meta property="og:description" content="Remote Pilot Academy is a drone career game set in Western Australia. Walk out to the pad, fly paid commercial jobs under the real rules, and grow a company from a borrowed ute and a mini. A web demo is coming.">
+<meta property="og:url" content="https://mathew-harvey.github.io/RemotePilotAcademy-landing/">
+<meta property="og:image" content="https://mathew-harvey.github.io/RemotePilotAcademy-landing/media/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: the page is the pilot's controller screen. A live flight view opens it, then the app the game runs on: glass panels, hairlines, telemetry in cyan, hi vis orange used sparingly. */
+:root{
+  --bg:#0d1015; --s1:#141920; --s2:#1b222b; --s3:#242d38; --line:#2c3643;
+  --text:#e6eaf0; --text2:#a7b1bf; --text3:#6e7988;
+  --accent:#ff6a1a; --accent-ink:#1a0d05; --tele:#5fd4e8;
+  --ok:#3fb950; --caution:#e9a23b; --danger:#f0524a; --info:#5aa6ff; --gold:#d4b062;
+  --glass:rgba(13,16,21,.72); --glass-line:rgba(255,255,255,.1);
+  --ui:"Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ui);font-size:17px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img,video,svg{max-width:100%;display:block}
+figure{margin:0}
+h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.12;text-wrap:balance;letter-spacing:-.015em}
+p{margin:0}
+a{color:var(--info)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--tele);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.num{font-variant-numeric:tabular-nums}
+.cap{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3)}
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--glass-line);border-radius:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:600;letter-spacing:.02em;background:var(--s2);border:1px solid var(--line);color:var(--text2);white-space:nowrap}
+.chip.ok{color:var(--ok);border-color:rgba(63,185,80,.4);background:rgba(63,185,80,.1)}
+.chip.or{color:#ff8a4a;border-color:rgba(255,106,26,.55);background:rgba(13,16,21,.78)}
+.chip.cy{color:var(--tele);border-color:rgba(95,212,232,.35);background:rgba(95,212,232,.08)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:8px;font:600 15px/1 var(--ui);text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn.pri{background:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{background:#ff7f3a}
+.btn.sec{background:var(--s2);color:var(--text);border-color:var(--line)}
+.btn.sec:hover{background:var(--s3)}
+.ico{width:18px;height:18px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* app bar */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(13,16,21,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--bg)}
+.appbar .wrap{display:flex;align-items:center;gap:22px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap}
+.brand i{width:22px;height:22px;border-radius:6px;background:var(--accent);display:grid;place-items:center}
+.brand i svg{width:14px;height:14px;stroke:var(--accent-ink);stroke-width:2.2;fill:none}
+.appbar nav{display:flex;gap:4px;margin-right:auto;overflow-x:auto;scrollbar-width:none}
+.appbar nav a{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;padding:6px 10px;border-radius:6px;white-space:nowrap}
+.appbar nav a:hover{color:var(--text);background:var(--s2)}
+
+/* hero: a live flight */
+.flight{position:relative;overflow:hidden;background:#06080b;border-bottom:1px solid var(--line)}
+.flight .bg{width:100%;height:min(86vh,860px);min-height:600px;object-fit:cover;object-position:50% 60%}
+.flight .grade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,8,11,.78) 0%,rgba(6,8,11,.45) 38%,rgba(6,8,11,0) 62%),linear-gradient(0deg,rgba(6,8,11,.7),rgba(6,8,11,0) 30%)}
+.hud{position:absolute;inset:0;pointer-events:none}
+.hud .wrap{position:relative;height:100%}
+.topbar{position:absolute;left:max(20px,env(safe-area-inset-left,0px));right:max(20px,env(safe-area-inset-right,0px));top:18px;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.topbar .chip{background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-color:var(--glass-line);color:var(--text)}
+.topbar .chip b{font-weight:600;color:var(--tele)}
+.rules{position:absolute;right:max(20px,env(safe-area-inset-right,0px));top:70px;width:250px;padding:12px 14px;display:flex;flex-direction:column;gap:7px}
+.rules .row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--text2)}
+.rules .row b{font-weight:600;color:var(--ok);display:flex;align-items:center;gap:5px}
+.rules .row b:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.reticle{position:absolute;left:66%;top:47%;width:54px;height:54px;transform:translate(-50%,-50%);border:1.5px solid rgba(230,234,240,.55);border-radius:50%}
+.reticle:before,.reticle:after{content:"";position:absolute;background:rgba(230,234,240,.55)}
+.reticle:before{left:50%;top:-14px;bottom:-14px;width:1.5px;transform:translateX(-50%)}
+.reticle:after{top:50%;left:-14px;right:-14px;height:1.5px;transform:translateY(-50%)}
+.tele{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:22px;padding:9px 18px;font:600 15px/1 var(--ui);color:var(--tele);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tele span{color:var(--text3);font-weight:600;font-size:12px;letter-spacing:.05em;margin-right:6px}
+.pitch{position:absolute;left:max(20px,calc((100vw - 1240px)/2 + 20px));top:50%;transform:translateY(-50%);max-width:560px;pointer-events:auto;display:flex;flex-direction:column;gap:20px}
+.pitch .eyebrow{display:flex;gap:8px;flex-wrap:wrap}
+.pitch h1{font-size:clamp(40px,5.6vw,72px);font-weight:700;letter-spacing:-.03em;line-height:1.02}
+.pitch h1 span{color:var(--accent)}
+.pitch p{font-size:19px;color:#cfd6df;max-width:46ch;line-height:1.55}
+.pitch .row{display:flex;flex-wrap:wrap;gap:12px}
+.obj{position:absolute;left:max(20px,env(safe-area-inset-left,0px));top:18px;width:300px;padding:12px 14px 13px;display:flex;flex-direction:column;gap:6px}
+.obj .t{font-size:14px;font-weight:600}
+.obj .m{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text2)}
+.bar{height:4px;border-radius:2px;background:var(--s3);overflow:hidden}
+.bar i{display:block;height:100%;width:62%;background:var(--tele);border-radius:2px;animation:hold 6s linear infinite}
+@keyframes hold{from{width:20%}to{width:100%}}
+
+/* sections */
+section{padding-block:96px;border-bottom:1px solid var(--line)}
+.head{display:flex;flex-direction:column;gap:14px;max-width:760px;margin-bottom:44px}
+.head h2{font-size:clamp(30px,3.6vw,46px);font-weight:600}
+.head p{font-size:18px;color:var(--text2);max-width:62ch}
+.tabbar{display:flex;gap:6px;flex-wrap:wrap}
+
+/* walkout */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.step{background:var(--s1);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.step img{aspect-ratio:16/10;object-fit:cover;width:100%}
+.step .bd{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px}
+.step .n{font:600 12px/1 var(--mono);color:var(--accent);letter-spacing:.06em}
+.step h3{font-size:18px}
+.step p{font-size:15px;color:var(--text2)}
+.check{margin-top:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:18px;align-items:stretch}
+.checklist{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.checklist h3{font-size:15px;margin-bottom:12px;display:flex;justify-content:space-between}
+.checklist h3 span{color:var(--ok);font-size:13px}
+.checklist ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.checklist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14.5px}
+.checklist li:first-child{border-top:0}
+.checklist li svg{color:var(--ok)}
+.checklist li em{margin-left:auto;font-style:normal;color:var(--text3);font-size:13px;font-variant-numeric:tabular-nums}
+.los{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.los img{width:100%;height:100%;object-fit:cover}
+.los .glass{position:absolute;left:14px;bottom:14px;right:14px;padding:12px 14px;font-size:14.5px;color:#cfd6df}
+
+/* job board */
+.loop{display:flex;flex-wrap:wrap;gap:0;margin-bottom:28px;background:var(--s1);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.loop span{flex:1 1 0;min-width:96px;padding:12px 10px;text-align:center;font-size:13.5px;font-weight:600;color:var(--text2);border-left:1px solid var(--line)}
+.loop span:first-child{border-left:0}
+.loop span i{display:block;font:600 11px/1.2 var(--mono);color:var(--text3);font-style:normal;margin-bottom:4px}
+.loop span.on{color:var(--accent);background:rgba(255,106,26,.08);box-shadow:inset 0 -2px 0 var(--accent)}
+.loop span.on i{color:var(--accent);opacity:.8}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.job{background:var(--s1);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.job .ph{position:relative}
+.job .ph img{aspect-ratio:16/9;object-fit:cover;object-position:50% 75%;width:100%}
+.job .ph .chip{position:absolute;left:10px;top:10px;background:var(--glass);border-color:var(--glass-line);color:var(--text)}
+.job .bd{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.job .where{font-size:12.5px;color:var(--text3)}
+.job h3{font-size:16px}
+.job .ft{display:flex;justify-content:space-between;align-items:baseline;margin-top:auto;padding-top:12px}
+.job .pay{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.job .kind{font-size:12.5px;color:var(--text2)}
+.note{font-size:13px;color:var(--text3);margin-top:16px}
+
+/* sites */
+.sites{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.site{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--s1);grid-column:span 4}
+.site.w{grid-column:span 6}
+.site img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:50% 72%;transition:transform .6s ease}
+.site:hover img{transform:scale(1.03)}
+.site .lab{position:absolute;left:10px;bottom:10px;right:10px;padding:9px 12px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.site .lab b{font-size:15px;font-weight:600}
+.site .lab span{font-size:12.5px;color:var(--text2);text-align:right}
+
+/* craft */
+.craft{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.feed{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#06080b}
+.feed img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.feed .glass{position:absolute;left:12px;top:12px;max-width:min(380px,calc(100% - 24px));padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.feed .glass b{font-size:15px;font-weight:600}
+.feed .glass p{font-size:14px;color:var(--text2);line-height:1.5}
+
+/* fleet */
+.hangar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.craftc{background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.craftc img{width:100%;aspect-ratio:16/10;object-fit:cover;transform:scale(1.35)}
+.craftc .bd{background:var(--s1);padding:12px 16px 14px;display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-top:1px solid var(--line)}
+.craftc b{font-size:15px;font-weight:600}
+.craftc span{font-size:13px;color:var(--text2);text-align:right}
+
+/* company */
+.co{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px}
+.co .big{border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.co .big img{width:100%;height:100%;object-fit:cover}
+.starts{display:flex;flex-direction:column;gap:10px}
+.start{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;align-items:baseline}
+.start b{font-size:15.5px}
+.start .cash{font-weight:700;font-variant-numeric:tabular-nums;color:var(--tele)}
+.start p{grid-column:1/-1;font-size:14px;color:var(--text2)}
+.later{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+.later .feed img{aspect-ratio:4/3}
+
+/* academy */
+.ac{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.juris{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.jur{background:var(--s1);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:center}
+.jur .flag{font:600 13px/1 var(--mono);width:44px;height:32px;border-radius:6px;display:grid;place-items:center;background:var(--s2);border:1px solid var(--line);color:var(--text)}
+.jur b{font-size:15.5px;display:block}
+.jur span{font-size:13.5px;color:var(--text2)}
+.svgcard{background:var(--s1);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.svgcard img{width:100%}
+.svgcard{display:flex;flex-direction:column}
+.svgcard img{flex:1;object-fit:contain;background:#141920}
+.svgcard figcaption{padding:10px 16px 14px;font-size:13.5px;color:var(--text2);border-top:1px solid var(--line)}
+.shots3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
+.shot{border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--s1)}
+.shot img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.shot figcaption{padding:10px 14px 12px;font-size:13.5px;color:var(--text2);border-top:1px solid var(--line)}
+.disc{display:flex;gap:12px;align-items:flex-start;margin-top:18px;padding:14px 16px;border:1px solid rgba(233,162,59,.35);background:rgba(233,162,59,.07);border-radius:10px;font-size:14.5px;color:#e8d3ad}
+.disc svg{color:var(--caution);margin-top:2px}
+
+/* specs */
+.specs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.spec{background:var(--s1);padding:20px 20px 22px;display:flex;flex-direction:column;gap:6px}
+.spec b{font:600 34px/1.1 var(--mono);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tele);white-space:nowrap}
+.spec b small{font-size:16px;color:var(--text2);font-weight:600;margin-left:3px}
+.spec p{font-size:14.5px;color:var(--text2)}
+
+/* closing */
+.end{position:relative;border-bottom:0;padding-block:0}
+.end img{width:100%;height:min(70vh,620px);min-height:420px;object-fit:cover}
+.end .grade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,8,11,.94) 0,rgba(6,8,11,.62) 45%,rgba(6,8,11,.1) 80%)}
+.end .wrap{position:absolute;left:0;right:0;bottom:56px;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.end h2{font-size:clamp(34px,4.6vw,60px);font-weight:700;letter-spacing:-.03em}
+.end p{font-size:18px;color:#cfd6df;max-width:56ch}
+.end .row{display:flex;gap:12px;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);background:var(--bg)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;padding-block:24px 30px;font-size:13.5px;color:var(--text3)}
+footer img{height:26px;width:auto}
+footer p{max-width:80ch}
+
+@media (max-width:1080px){
+  .board{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .site,.site.w{grid-column:span 6}
+  .hangar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .craftc:last-child:nth-child(odd){grid-column:span 2}
+  .craftc:last-child:nth-child(odd) img{aspect-ratio:32/10}
+  .specs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules{display:none}
+}
+@media (max-width:820px){
+  .juris{grid-template-columns:1fr}
+  .appbar nav{display:none}
+  .steps,.craft,.co,.ac,.check,.later{grid-template-columns:1fr}
+  .shots3{grid-template-columns:1fr}
+  .loop{display:grid;grid-template-columns:repeat(5,1fr)}
+  .loop span{border-top:1px solid var(--line)}
+  .loop span:nth-child(-n+5){border-top:0}
+  .loop span:nth-child(5n+1){border-left:0}
+  .flight .bg{height:auto;min-height:0;aspect-ratio:3/4;object-position:58% 60%}
+  .flight .grade{background:linear-gradient(0deg,rgba(6,8,11,.92) 10%,rgba(6,8,11,.35) 55%,rgba(6,8,11,.2))}
+  .pitch{top:auto;bottom:70px;transform:none;right:max(20px,env(safe-area-inset-right,0px))}
+  .reticle{display:none}
+  .obj{width:auto;right:max(20px,env(safe-area-inset-right,0px));top:62px}
+  .topbar{justify-content:flex-start}
+  .topbar .chip:nth-child(n+4){display:none}
+  .tele{gap:14px;font-size:13px;bottom:16px;padding:8px 12px}
+  .tele .x{display:none}
+}
+@media (max-width:560px){
+  .appbar .chip.or{display:none}
+  body{font-size:16px}
+  section{padding-block:64px}
+  .board{grid-template-columns:1fr}
+  .site,.site.w{grid-column:span 12}
+  .hangar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .craftc .bd{flex-direction:column;gap:2px;flex:1}
+  .loop span{min-width:0;padding:10px 2px;font-size:12px}
+  .craftc span{text-align:left;font-size:12.5px}
+  .feed .glass{position:static;max-width:none;border:0;border-top:1px solid var(--line);border-radius:0;background:var(--s1);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .flight .grade{inset:0 0 auto 0;height:430px;background:linear-gradient(0deg,#06080b 0%,rgba(6,8,11,0) 32%),linear-gradient(180deg,rgba(6,8,11,.45),rgba(6,8,11,0) 30%)}
+  .specs{grid-template-columns:1fr}
+  .flight .bg{display:block;aspect-ratio:auto;height:430px;max-height:none;object-position:79% 55%}
+  .pitch{position:relative;left:auto;right:auto;bottom:auto;margin-top:-36px;padding:0 20px 76px}
+  .pitch h1{font-size:40px}
+  .pitch p{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){.bar i{animation:none}.site img{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="wrap">
+    <a class="brand" href="#top"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l4 4M19 5l-4 4M5 19l4-4M19 19l-4-4"/><circle cx="12" cy="12" r="3"/></svg></i>Remote Pilot Academy</a>
+    <nav aria-label="Sections">
+      <a href="#walkout">The walkout</a><a href="#jobs">Jobs</a><a href="#sites">Sites</a><a href="#fleet">Fleet</a><a href="#company">Company</a><a href="#academy">Academy</a>
+    </nav>
+    <span class="chip or">Web demo coming soon</span>
+  </div>
+</header>
+
+<main id="top">
+<div class="flight">
+  <img class="bg" src="media/r-ac-mine.jpg" alt="An enterprise quadcopter holding over the benches of an open pit gold mine, with excavators working on the pit floor" fetchpriority="high">
+  <div class="grade"></div>
+  <div class="hud" aria-hidden="true">
+    <div class="glass obj">
+      <span class="cap">Job &middot; Mining &middot; Eastern Goldfields</span>
+      <span class="t">Pit wall inspection</span>
+      <span class="m num"><span>Find the wall hazards</span><span>3 / 5</span></span>
+      <span class="bar"><i></i></span>
+    </div>
+    <div class="topbar">
+      <span class="chip ok">GPS</span>
+      <span class="chip num">Sats <b>18</b></span>
+      <span class="chip num">Link <b>98%</b></span>
+      <span class="chip num">Battery <b>74%</b> 15.4 V</span>
+      <span class="chip num">Flight <b>06:42</b></span>
+      <span class="chip num">Wind <b>SW 3.4 m/s</b></span>
+    </div>
+    <div class="glass rules">
+      <span class="cap">Rules monitor</span>
+      <span class="row"><span>Height under 120 m</span><b>OK</b></span>
+      <span class="row"><span>Visual line of sight</span><b>OK</b></span>
+      <span class="row"><span>30 m from people</span><b>OK</b></span>
+      <span class="row"><span>Day only</span><b>OK</b></span>
+    </div>
+    <div class="glass tele"><b><span>H</span>32.4 m</b><b><span>D</span>48 m</b><b><span>H.S</span>5.2 m/s</b><b class="x"><span>V.S</span>0.0 m/s</b></div>
+  </div>
+  <div class="pitch">
+    <div class="eyebrow"><span class="chip or">Web demo coming soon</span><span class="chip">Western Australia</span><span class="chip">Working name</span></div>
+    <h1>Fly the job,<br><span>then run the company.</span></h1>
+    <p>A drone career game set in Western Australia. You walk out to the pad and fly paid work under the real rules. Your company starts with a borrowed ute and a mini.</p>
+    <div class="row">
+      <a class="btn pri" href="#jobs">See the job board</a>
+      <a class="btn sec" href="#walkout">How a flight starts</a>
+    </div>
+  </div>
+</div>
+
+<section id="walkout">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">How a flight starts</span>
+      <h2>You carry the aircraft from the case to the pad yourself.</h2>
+      <p>You start at the ute, in first person. Unfold the arms, take the gimbal cover off, walk back to the pilot station and tick the checks on the controller screen. Then the motors spin up and you have control.</p>
+    </div>
+    <div class="steps">
+      <article class="step"><img src="media/game-walkout-case.jpg" alt="Gloved hands lifting a folded quadcopter from a hard case on the tailgate of a ute" loading="lazy"><div class="bd"><span class="n">01 &middot; At the ute</span><h3>Pick up the aircraft</h3><p>The hard case sits on the tailgate. You open it and lift the aircraft out.</p></div></article>
+      <article class="step"><img src="media/game-walkout-controller.jpg" alt="The controller raised in front of the pilot with the pre flight checklist on its screen" loading="lazy"><div class="bd"><span class="n">02 &middot; Pilot station</span><h3>Run the checks</h3><p>Each line reads the real battery, compass, GPS lock, airspace and the people near the pad.</p></div></article>
+      <article class="step"><img src="media/r-sim-los-golden-hour.jpg" alt="Line of sight at golden hour over the training field with the camera feed on the controller" loading="lazy"><div class="bd"><span class="n">03 &middot; Line of sight</span><h3>Fly it from your own eyes</h3><p>The aircraft is a speck against the sky. The camera feed is on the controller in your hands.</p></div></article>
+    </div>
+    <div class="check">
+      <div class="checklist">
+        <h3>Pre flight <span>7 of 7</span></h3>
+        <ul>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Battery seated and charged<em class="num">98%</em></li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Propellers secure</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Gimbal free</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Compass and IMU OK</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>GPS lock, home point recorded<em class="num">18 sats</em></li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Airspace checked</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Area clear of people</li>
+        </ul>
+      </div>
+      <div class="los"><img src="media/r-sim-screen-tower.jpg" alt="The controller screen raised: a cell tower inspection in wind, with line of sight as the inset" loading="lazy"><p class="glass">Press Tab to raise the screen and fly by the camera. Line of sight drops to an inset, so you can still see where the aircraft is.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="jobs">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">The job loop</span>
+      <h2>A job runs from the quote to the invoice.</h2>
+      <p>Each job follows the steps a commercial operator works through. You check the weather window and the airspace, write the risk assessment and brief the crew. Then you fly one or more batteries, process the footage and send it to a client who reacts.</p>
+    </div>
+    <div class="loop" aria-label="The job loop">
+      <span><i>01</i>Quote</span><span><i>02</i>Plan</span><span><i>03</i>Airspace</span><span><i>04</i>Risk</span><span><i>05</i>Brief</span><span class="on"><i>06</i>Fly</span><span><i>07</i>Log</span><span><i>08</i>Process</span><span><i>09</i>Deliver</span><span><i>10</i>Invoice</span>
+    </div>
+    <div class="board">
+      <article class="job"><div class="ph"><img src="media/site-coastal-estate.webp" alt="" loading="lazy"><span class="chip">Tier 1</span></div><div class="bd"><span class="where">South West coast &middot; Real estate</span><h3>Clifftop listing stills</h3><div class="ft"><span class="pay">$450</span><span class="kind">Stills</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/site-farm-survey.webp" alt="" loading="lazy"><span class="chip">Tier 1</span></div><div class="bd"><span class="where">Wheatbelt &middot; Agriculture</span><h3>Paddock map for the agronomist</h3><div class="ft"><span class="pay">$600</span><span class="kind">Mapping</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/site-industrial-site.webp" alt="" loading="lazy"><span class="chip">Tier 2</span></div><div class="bd"><span class="where">Kwinana and Peel &middot; Inspection</span><h3>Cell tower antenna inspection</h3><div class="ft"><span class="pay">$1,300</span><span class="kind">Inspection</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/site-energy-park.webp" alt="" loading="lazy"><span class="chip">Tier 3</span></div><div class="bd"><span class="where">Mid West &middot; Energy</span><h3>Wind turbine blade inspection</h3><div class="ft"><span class="pay">$1,700</span><span class="kind">Inspection</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/r-beauty-farm-golden.jpg" alt="" loading="lazy"><span class="chip">Tier 2</span></div><div class="bd"><span class="where">Wheatbelt &middot; Film</span><h3>Ute commercial tracking shot</h3><div class="ft"><span class="pay">$1,100</span><span class="kind">Video</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/r-beauty-coastal-house.jpg" alt="" loading="lazy"><span class="chip">Tier 2</span></div><div class="bd"><span class="where">South West coast &middot; Real estate</span><h3>Front door to back deck</h3><div class="ft"><span class="pay">$1,400</span><span class="kind">FPV</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/site-goldfields-pit.webp" alt="" loading="lazy"><span class="chip">Tier 3</span></div><div class="bd"><span class="where">Eastern Goldfields &middot; Mining</span><h3>Post blast fume sampling</h3><div class="ft"><span class="pay">$1,600</span><span class="kind">Sampling</span></div></div></article>
+      <article class="job"><div class="ph"><img src="media/site-training-field.webp" alt="" loading="lazy"><span class="chip">Tier 1</span></div><div class="bd"><span class="where">Perth Hills &middot; Events</span><h3>Training field demo day</h3><div class="ft"><span class="pay">$300</span><span class="kind">Demo</span></div></div></article>
+    </div>
+    <p class="note">Job titles and fees from the game's current job board. A clean flight and a smooth one each pay a bonus on top.</p>
+  </div>
+</section>
+
+<section id="sites">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">Ten work sites across nine regions</span>
+      <h2>From the Perth Hills to the Pilbara coast.</h2>
+      <p>Each site is at real world scale, with the plants, light and weather of its region. The seasons change as well. The Wheatbelt goes from green crop to stubble, and the Murchison flowers after winter rain.</p>
+    </div>
+    <div class="sites">
+      <figure class="site w"><img src="media/site-goldfields-pit.webp" alt="An open pit gold mine in the Goldfields" loading="lazy"><figcaption class="glass lab"><b>Open pit</b><span>Eastern Goldfields</span></figcaption></figure>
+      <figure class="site w"><img src="media/r-ac-gas.jpg" style="object-position:50% 60%" alt="A quadcopter beside the columns of a gas plant on the Pilbara coast" loading="lazy"><figcaption class="glass lab"><b>Gas plant</b><span>Pilbara coast</span></figcaption></figure>
+      <figure class="site"><img src="media/r-ac-turbine-wide.jpg" style="object-position:70% 40%" alt="A quadcopter beside a wind turbine tower over Mid West paddocks" loading="lazy"><figcaption class="glass lab"><b>Energy park</b><span>Mid West</span></figcaption></figure>
+      <figure class="site"><img src="media/r-facade-spray.jpg" alt="A wash drone spraying the glass facade of a city tower" loading="lazy"><figcaption class="glass lab"><b>City facade</b><span>Perth city</span></figcaption></figure>
+      <figure class="site"><img src="media/r-stope-void.jpg" alt="Inside an underground stope lit by a caged drone" loading="lazy"><figcaption class="glass lab"><b>Underground stope</b><span>Eastern Goldfields</span></figcaption></figure>
+      <figure class="site"><img src="media/r-year-murchison-flowers.jpg" alt="Everlastings flowering across red earth on a Murchison lease" loading="lazy"><figcaption class="glass lab"><b>Mining lease</b><span>Murchison</span></figcaption></figure>
+      <figure class="site"><img src="media/r-ac-industrial.jpg" style="object-position:60% 60%" alt="A quadcopter over an industrial yard with a warehouse, site office and parked trucks" loading="lazy"><figcaption class="glass lab"><b>Industrial site</b><span>Kwinana and Peel</span></figcaption></figure>
+      <figure class="site"><img src="media/r-ac-house.jpg" style="object-position:60% 55%" alt="A small quadcopter lining up on a clifftop house between Norfolk pines" loading="lazy"><figcaption class="glass lab"><b>Coastal estate</b><span>South West coast</span></figcaption></figure>
+      <figure class="site w"><img style="object-position:50% 60%" src="media/r-ac-farm.jpg" alt="A quadcopter low over Wheatbelt paddocks at golden hour, a hay shed and granite rock behind" loading="lazy"><figcaption class="glass lab"><b>Farm</b><span>Wheatbelt</span></figcaption></figure>
+      <figure class="site w"><img style="object-position:50% 30%" src="media/hero-training-field.webp" alt="The training field with a drone hovering over the grass" loading="lazy"><figcaption class="glass lab"><b>Training field</b><span>Perth Hills</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="craft">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">In the air</span>
+      <h2>You fly each kind of job differently.</h2>
+      <p>You frame a house for an agent, cover a paddock for a survey, hunt hot cells across a solar block, or thread a cinewhoop through a doorway while a spotter calls the gaps.</p>
+    </div>
+    <div class="craft">
+      <figure class="feed"><img src="media/r-sim-fpv-coastal.jpg" alt="FPV goggles view as a cinewhoop rises over a roof toward the ocean" loading="lazy"><figcaption class="glass"><b>FPV with a spotter</b><p>You fly in goggles with a spotter beside you. There are seven film jobs for the FPV aircraft, and race nights at five clubs.</p></figcaption></figure>
+      <figure class="feed"><img src="media/planner-survey-applied.jpg" alt="The mission planner with a survey grid, ground sample distance, photo count and battery use" loading="lazy"><figcaption class="glass"><b>Plan the survey</b><p>Lay a grid, read its ground sample distance and photo count, then supervise the aircraft as it flies the lines.</p></figcaption></figure>
+      <figure class="feed"><img src="media/r-sim-craft-blade.jpg" alt="A camera view close to a wind turbine blade looking for defects" loading="lazy"><figcaption class="glass"><b>Inspect the blade</b><p>Hold station in the wind beside a turbine and find the damage before the client does.</p></figcaption></figure>
+      <figure class="feed"><img src="media/r-sim-traffic-helicopter.jpg" alt="Line of sight on the training field as a helicopter passes, the rules monitor open" loading="lazy"><figcaption class="glass"><b>Give way</b><p>Crewed traffic comes through low. See it, give way to the helicopter, then finish the job.</p></figcaption></figure>
+      <figure class="feed"><img src="media/r-ac-solar.jpg" alt="An enterprise quadcopter over long rows of solar panels" loading="lazy"><figcaption class="glass"><b>Find the hot cells</b><p>Fly the solar block in full sun with the thermal camera, and tag each hot cell and failed string.</p></figcaption></figure>
+      <figure class="feed"><img src="media/r-ac-murchison.jpg" alt="A quadcopter flying magnetic survey lines over red Murchison country, the flown swaths coloured by reading" loading="lazy"><figcaption class="glass"><b>Fly the survey lines</b><p>Drone magnetics on a Murchison lease. You hold 15 to 35 m above the ground along lines 25 m apart.</p></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="fleet">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">The hangar</span>
+      <h2>Nine aircraft, from a 249&nbsp;g mini to a heavy lift&nbsp;hex.</h2>
+      <p>You can buy them, or hire by the day and keep your cash. Each has its own flight model, stepped at 500&nbsp;Hz.</p>
+    </div>
+    <div class="hangar">
+      <div class="craftc"><img src="media/craft-micro-249.webp" alt="A small yellow folding quadcopter" loading="lazy"><div class="bd"><b>Mini</b><span>Under 250 g. The usual first aircraft</span></div></div>
+      <div class="craftc"><img src="media/craft-quad-900.webp" alt="A white folding camera quadcopter" loading="lazy"><div class="bd"><b>Air class quad</b><span>About 900 g. Stills and video</span></div></div>
+      <div class="craftc"><img src="media/craft-quad-6kg.webp" alt="A teal enterprise quadcopter on landing legs" loading="lazy"><div class="bd"><b>Enterprise quad</b><span>6.3 kg. Inspection and thermal</span></div></div>
+      <div class="craftc"><img src="media/craft-fpv-cinewhoop.webp" alt="A ducted cinewhoop with a camera on top" loading="lazy"><div class="bd"><b>Cinewhoop</b><span>Ducted FPV for flying indoors</span></div></div>
+      <div class="craftc"><img src="media/craft-fpv-5in.webp" alt="A five inch FPV quad with red propellers" loading="lazy"><div class="bd"><b>5 inch freestyle</b><span>Fast FPV and race nights</span></div></div>
+      <div class="craftc"><img src="media/craft-inav-7in.webp" alt="A seven inch long range quad" loading="lazy"><div class="bd"><b>7 inch long range</b><span>Waypoint missions</span></div></div>
+      <div class="craftc"><img src="media/craft-cage-235.webp" alt="A drone inside a spherical protective cage" loading="lazy"><div class="bd"><b>Confined space cage</b><span>LiDAR and lights, underground</span></div></div>
+      <div class="craftc"><img src="media/craft-wash-12kg.webp" alt="A heavy quad with a spray lance" loading="lazy"><div class="bd"><b>Wash drone</b><span>About 12 kg, a spray lance and a pump van</span></div></div>
+      <div class="craftc"><img src="media/craft-hex-10kg.webp" alt="An orange heavy lift hexacopter" loading="lazy"><div class="bd"><b>Heavy lift hex</b><span>Flies on if a motor stops</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="company">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">The company</span>
+      <h2>You start with a borrowed ute and end up with a hangar.</h2>
+      <p>The yard is your company's own block on the Swan Valley fringe, and you walk around it. It grows with what you buy. You trade the sea container store for a shed, then a hangar, and your crew park their cars there. After a bad job, your money and reputation recover. The weather can still upset the plan.</p>
+    </div>
+    <div class="co">
+      <div class="big"><img src="media/r-maps-yard-full.jpg" alt="A fully grown company yard with a hangar, office, solar tables and a flight line of aircraft" loading="lazy"></div>
+      <div class="starts">
+        <span class="cap">Four ways to start</span>
+        <div class="start"><b>One aircraft and a ute</b><span class="cash">$500</span><p>The mini, three batteries and the first jobs.</p></div>
+        <div class="start"><b>From scratch</b><span class="cash">$3,000</span><p>The ute and no aircraft. Buy one and be nearly broke, or hire by the day.</p></div>
+        <div class="start"><b>Take over a going concern</b><span class="cash">$2,500</span><p>Three tired aircraft, a spotter on wages and $9,000 owed to the bank.</p></div>
+        <div class="start"><b>Open skies</b><span class="cash">$250,000</span><p>Plenty of cash from day one. Rank, skills and clients still come from flying.</p></div>
+      </div>
+    </div>
+    <div class="later">
+      <figure class="feed"><img src="media/r-room-hangar-night.jpg" alt="Inside the company hangar, benches and parts shelves" loading="lazy"><figcaption class="glass"><b>Rooms you walk into</b><p>The store, the shed, the office and the hangar.</p></figcaption></figure>
+      <figure class="feed"><img src="media/r-beauty-field-eye.jpg" alt="The training field from the pilot station at golden hour, gums along the boundary" loading="lazy"><figcaption class="glass"><b>Neighbours</b><p>There are roos on the field, galahs in the gums and sheep on the farm.</p></figcaption></figure>
+      <figure class="feed"><img src="media/sim-los-night.jpg" alt="A night operation at the field with the aircraft lights and strobe in the sky" loading="lazy"><figcaption class="glass"><b>After dark</b><p>Night jobs need navigation lights and a strobe. Late in the career you can run light shows, and a bigger fleet wins bigger shows.</p></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="academy">
+  <div class="wrap">
+    <div class="head">
+      <span class="cap">The Academy</span>
+      <h2>Learn the real rules, then fly by them.</h2>
+      <p>Training mode opens the career with lessons, practice quizzes and checkrides built on the real rules in three countries. The server replays every assessed flight from your inputs before it records a pass.</p>
+    </div>
+    <div class="juris">
+      <div class="jur"><span class="flag">AU</span><div><b>Australia</b><span>CASA, CASR Part 101</span></div></div>
+      <div class="jur"><span class="flag">US</span><div><b>United States</b><span>FAA, 14 CFR Part 107</span></div></div>
+      <div class="jur"><span class="flag">CA</span><div><b>Canada</b><span>Transport Canada, CARs Part IX</span></div></div>
+    </div>
+    <div class="ac">
+      <figure class="svgcard"><img src="media/three-nm-rule.svg" alt="Lesson diagram: the 3 nm rule around a controlled aerodrome, plan view" loading="lazy"><figcaption>The 3 nm rule around a controlled aerodrome, from the Australian lessons.</figcaption></figure>
+      <figure class="svgcard"><img src="media/vlos-size.svg" alt="How big a 35 cm drone looks at 200, 400 and 600 metres" loading="lazy"><figcaption>How big a 35 cm drone looks at 200, 400 and 600 m. At 400 m it is a dot. Line of sight takes practice.</figcaption></figure>
+    </div>
+    <div class="shots3">
+      <figure class="shot"><img src="media/app-pathway-au.jpg" alt="The CASA credential pathway with readiness for each step" loading="lazy"><figcaption>The pathway for your country, with readiness for each step.</figcaption></figure>
+      <figure class="shot"><img src="media/app-debrief-pass.jpg" alt="A competent flight debrief, verified by server replay" loading="lazy"><figcaption>A debrief with the measured numbers, checked by replay.</figcaption></figure>
+      <figure class="shot"><img src="media/app-certificate.jpg" alt="A printable course certificate marked as a training record" loading="lazy"><figcaption>A course certificate, marked on its face as a training record.</figcaption></figure>
+    </div>
+    <p class="disc"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>Training records only. Remote Pilot Academy is not a licence, certificate or approval issued by CASA, the FAA or Transport Canada, and it is not endorsed by them.</p>
+  </div>
+</section>
+
+<section id="specs">
+  <div class="wrap">
+    <div class="specs">
+      <div class="spec"><b class="num">500<small>Hz</small></b><p>Flight model step. The same inputs give the same flight.</p></div>
+      <div class="spec"><b class="num">10</b><p>Work sites, each in the climate of its region.</p></div>
+      <div class="spec"><b class="num">9</b><p>Aircraft classes, bought or hired by the day.</p></div>
+      <div class="spec"><b class="num">4</b><p>Pilots in one free flight. Bring friends to a job and they get a day rate.</p></div>
+    </div>
+    <p class="note">Plays with a gamepad, or an RC transmitter over USB.</p>
+  </div>
+</section>
+
+<section class="end">
+  <img src="media/r-beauty-farm-golden.jpg" alt="Golden hour over Wheatbelt paddocks, long shadows from a row of gums" loading="lazy">
+  <div class="grade"></div>
+  <div class="wrap">
+    <span class="chip or glass">Web demo coming soon</span>
+    <h2>The field is booked. The weather looks good.</h2>
+    <p>Remote Pilot Academy is in development, and a demo that runs in your web browser is coming. The name is a working name.</p>
+    <div class="row"><a class="btn pri" href="https://andagainsoftware.com/">More from andAgainSoftware</a><a class="btn sec" href="#top">Back to the pad</a></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://andagainsoftware.com/"><img src="media/andagainsoftware.png" alt="andAgainSoftware"></a>
+    <p>Remote Pilot Academy (working name) is a game by andAgainSoftware. Training records only, not a licence. No aircraft brand is shown or endorsed.</p>
+  </div>
+</footer>
+</body>
+</html>
