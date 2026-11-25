@@ -81,10 +81,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--tele);outline-offse
 .tag .tx small{font:600 10px/1 var(--mono);color:var(--text3)}
 .tag.lo .tx{top:32px;left:-26px}
 .hud{position:absolute;inset:0;pointer-events:none}
-.job{position:absolute;left:var(--gut);top:16px;width:290px;padding:11px 13px 12px;display:flex;flex-direction:column;gap:5px}
+.job{position:absolute;left:var(--gut);top:16px;width:310px;padding:11px 13px 12px;display:flex;flex-direction:column;gap:5px}
 .job .t{font-size:14px;font-weight:600}
-.job .m{display:flex;justify-content:space-between;font-size:12.5px;color:var(--text2)}
-.job .m b{font:600 12.5px/1 var(--mono);color:var(--text)}
+.job .m{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--text2)}
+.job .m b{font:600 12px/1 var(--mono);color:var(--tele)}
+.job .m b::before{content:"Kit  ";color:var(--text3)}
 .meter{height:3px;border-radius:2px;background:var(--s3);overflow:hidden}
 .meter i{display:block;height:100%;width:0;background:var(--tele);transition:width .4s}
 .chips{position:absolute;right:var(--gut);top:16px;display:flex;gap:6px}
@@ -100,6 +101,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--tele);outline-offse
 .tele span{font:600 11px/1 var(--ui);color:var(--text3);margin-right:6px}
 .motion{position:absolute;right:var(--gut);bottom:14px;pointer-events:auto;height:30px;padding:0 10px;border-radius:6px;border:1px solid var(--glass-line);background:var(--glass);font-size:12px;font-weight:600;cursor:pointer;color:var(--text2)}
 .motion:hover{color:var(--text)}
+.ladder{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;margin:0;padding:9px 6px;list-style:none;white-space:nowrap}
+.ladder li{display:flex;align-items:center;gap:7px;padding:0 11px;font:600 12px/1 var(--ui);color:var(--text3);transition:color .3s}
+.ladder li i{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--line2);flex:none;transition:background .3s,border-color .3s,box-shadow .3s}
+.ladder li.done{color:var(--text2)}
+.ladder li.done i{background:var(--tele);border-color:var(--tele)}
+.ladder li.on{color:var(--text)}
+.ladder li.on i{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,106,26,.25)}
+.ladder li:last-child{margin-left:4px;padding-left:14px;border-left:1px solid var(--line2);color:var(--text2)}
+.ladder li:last-child i{border-radius:1px;transform:rotate(45deg);border-color:var(--accent)}
+.ladder li:last-child.on{color:var(--text)}
+.job .t,.job .m span,.job .lab{transition:opacity .25s}
+.job.swap .t,.job.swap .m,.job.swap .lab{opacity:0}
 .motion[hidden]{display:none}
 
 /* title strip under the flight */
@@ -259,9 +272,54 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--tele);outline-offse
 .diag{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:24px;margin-top:40px;align-items:start}
 .diag figure{background:#141920;border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .diag img{width:100%;height:auto}
+.swipe{display:none}
 .diag figcaption{padding:12px 16px;font-size:14px;color:var(--text2);border-top:1px solid var(--line);background:var(--s1)}
 .disc{margin-top:28px;display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid rgba(233,162,59,.35);border-radius:8px;background:rgba(233,162,59,.06);font-size:13.5px;color:var(--text2)}
 .disc svg{width:16px;height:16px;stroke:var(--caution);stroke-width:2;fill:none;flex:none;margin-top:3px}
+
+
+/* the career ladder */
+.ranks{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line2)}
+.ranks li{position:relative;padding:26px 22px 4px 0}
+.ranks li+li{padding-left:22px;border-left:1px solid var(--line)}
+.ranks li::before{content:"";position:absolute;top:-5px;left:0;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1.5px solid var(--text2)}
+.ranks li+li::before{left:-5px}
+.ranks li:last-child::before{background:var(--accent);border-color:var(--accent)}
+.ranks .n{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.ranks h3{margin-top:8px;font-size:18px}
+.ranks .rep{display:block;margin-top:6px;font:500 12.5px/1.3 var(--mono);color:var(--tele)}
+.ranks .opens{display:block;margin-top:14px;font:600 13px/1.3 var(--ui);color:var(--text)}
+.ranks p{margin-top:6px;font-size:14.5px;color:var(--text2)}
+
+/* light shows */
+.showgrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:32px;align-items:start}
+.showpic{border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#05070b}
+.showpic img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.showpic figcaption{padding:12px 16px;font-size:14px;color:var(--text2);border-top:1px solid var(--line);background:var(--s1)}
+.tiers{width:100%;border-collapse:collapse;font-size:14.5px}
+.tiers caption{text-align:left;padding:0 0 14px}
+.tiers th{text-align:left;font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:0 10px 10px 0;border-bottom:1px solid var(--line2)}
+.tiers td{padding:11px 10px 11px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.tiers td.c,.tiers th.c{font-family:var(--mono);text-align:right;padding-right:0;padding-left:16px;white-space:nowrap}
+.tiers td small{display:block;color:var(--text3);font-size:12.5px}
+.tiers tr:last-child td:first-child{box-shadow:inset 2px 0 var(--accent);padding-left:10px}
+.acts{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}
+.acts li{padding:18px 22px 0 0}
+.acts li+li{padding-left:22px;border-left:1px solid var(--line)}
+.acts b{display:block;font-weight:600;font-size:16px}
+.acts p{margin-top:6px;font-size:14.5px;color:var(--text2)}
+
+
+.shows{padding-top:0}
+.band{position:relative;background:#06080d;border-bottom:1px solid var(--line);margin-bottom:48px;overflow:hidden}
+.band img{position:absolute;right:0;top:0;width:min(74%,1100px);height:100%;object-fit:cover;object-position:50% 40%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 34%);mask-image:linear-gradient(90deg,transparent,#000 34%)}
+.band .wrap{position:relative;min-height:min(560px,44vw);display:flex;align-items:flex-end}
+.bandtxt{max-width:440px;padding:64px 0 56px}
+.bandtxt .sh{margin-bottom:22px}
+.bandtxt h2{font-size:clamp(34px,4vw,58px);letter-spacing:-.025em;line-height:1.02}
+.bandtxt p{margin-top:18px;color:var(--text2);font-size:17px}
+.shows .showgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px}
+.shows .acts{margin-top:44px}
 
 /* debrief */
 .end{padding:96px 0 104px;border-top:1px solid var(--line)}
@@ -279,6 +337,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--tele);outline-offse
 .next .row{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap;align-items:center}
 .next .row a{font-size:15px;color:var(--text);text-decoration:none;border-bottom:1px solid var(--line2);padding-bottom:2px}
 .next .row a:hover{border-color:var(--accent)}
+.next .row a.cta{display:inline-flex;align-items:center;height:46px;padding:0 20px;border:0;border-radius:8px;background:var(--accent);color:#0d1015;font-weight:600}
+.next .row a.cta:hover{background:#ff8340}
 .next .specline{margin-top:28px;font-size:13px;color:var(--text3)}
 footer{border-top:1px solid var(--line);padding:24px 0 calc(24px + env(safe-area-inset-bottom,0px))}
 footer .wrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
@@ -287,6 +347,8 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 @media (max-width:1100px){
   .rules{display:none}
+  .ladder li:not(.on):not(:last-child) span{display:none}
+  .ladder li{padding:0 6px}
   .chips span:nth-child(-n+3){display:none}
   .title .wrap{grid-template-columns:1fr auto;gap:12px 32px}
   .title .pitch{grid-column:1/-1;grid-row:2}
@@ -300,8 +362,19 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
   .bar nav::-webkit-scrollbar{display:none}
   .bar nav{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
   .bar nav a{padding:6px 10px 6px 0;margin-right:8px}
-  .flight{height:min(56.25vw,calc(100svh - 92px - 132px))}
-  .wo,.site-grid,.air,.co,.acad,.end .wrap,.diag{grid-template-columns:1fr}
+  .flight{height:max(56.25vw,58svh)}
+  .title .wrap{grid-template-columns:1fr}
+  .title .pitch{grid-row:auto}
+  .wo,.site-grid,.air,.co,.acad,.end .wrap,.diag,.showgrid,.shows .showgrid{grid-template-columns:1fr}
+  .shows .showgrid{gap:32px}
+  .ranks{grid-template-columns:1fr;border-top:0;border-left:1px solid var(--line2);margin-left:5px}
+  .ranks li,.ranks li+li{padding:0 0 22px 24px;border-left:0}
+  .ranks li::before,.ranks li+li::before{top:4px;left:-5px}
+  .band img{position:relative;width:100%;height:auto;aspect-ratio:16/10;-webkit-mask-image:linear-gradient(0deg,transparent,#000 30%);mask-image:linear-gradient(0deg,transparent,#000 30%)}
+  .band .wrap{min-height:0;margin-top:-56px}
+  .bandtxt{max-width:none;padding:0 0 40px}
+  .acts{grid-template-columns:1fr}
+  .acts li,.acts li+li{padding:16px 0 0;border-left:0}
   .atlas{grid-template-columns:minmax(0,.62fr) minmax(0,1fr);gap:20px}
   .sites{grid-template-columns:1fr}
   .airview{position:static;order:-1}
@@ -313,7 +386,7 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 }
 @media (max-width:560px){
   .flight{height:auto;aspect-ratio:4/5;min-height:0}
-  .stage{--fx:.62}
+  .stage{--fx:var(--pfx,.5)}
   .chips{display:none}
   .job{width:auto;right:var(--gut)}
   .tele{gap:12px;font-size:12.5px;padding:7px 11px;bottom:12px}
@@ -329,6 +402,7 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
   .atlas{grid-template-columns:1fr}
   .diag figure{overflow-x:auto}
   .diag img{min-width:600px}
+  .swipe{display:inline;color:var(--tele)}
   .diag figcaption{position:sticky;left:0}
   .juris div{grid-template-columns:44px 1fr}
   .juris div span:last-child{grid-column:2}
@@ -357,36 +431,25 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 <header class="bar">
   <div class="wrap">
     <a class="brand" href="#top"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l4 4M19 5l-4 4M5 19l4-4M19 19l-4-4"/><circle cx="12" cy="12" r="3"/></svg></i>Remote Pilot Academy</a>
-    <nav aria-label="Sections"><a href="#work">Work</a><a href="#site">On site</a><a href="#map">Map</a><a href="#air">In the air</a><a href="#hangar">Hangar</a><a href="#company">Company</a><a href="#academy">Academy</a></nav>
+    <nav aria-label="Sections"><a href="#work">Work</a><a href="#career">Career</a><a href="#site">On site</a><a href="#map">Map</a><a href="#air">In the air</a><a href="#hangar">Hangar</a><a href="#company">Company</a><a href="#shows">Shows</a><a href="#academy">Academy</a></nav>
     <span class="status"><i class="dot"></i><span>Web demo</span><b>coming soon</b></span>
   </div>
 </header>
 
 <main id="top">
-<section class="flight" aria-label="A pit wall inspection in the game">
+<section class="flight" aria-label="A career in the game, one job from each rank, ending with a light show">
   <div class="stage" id="stage">
-    <img class="poster" src="media/hero-poster.jpg" alt="An inspection quadcopter flying along the benches of an open pit gold mine, inspecting the wall" fetchpriority="high">
+    <img class="poster" src="media/hero-poster.jpg" alt="A small drone lining up a clifftop house for listing stills, the first job of a career" fetchpriority="high">
     <video id="hero" muted loop playsinline preload="auto" poster="media/hero-poster.jpg" aria-hidden="true"></video>
-    <div class="tags" id="tags" aria-hidden="true"></div>
   </div>
   <div class="hud" aria-hidden="true">
     <div class="glass job">
-      <span class="lab">Job &middot; Mining &middot; Eastern Goldfields</span>
-      <span class="t">Pit wall inspection</span>
-      <span class="m"><span>Find the wall hazards</span><b id="found">0 / 5</b></span>
-      <span class="meter"><i id="meter"></i></span>
+      <span class="lab" id="jRank">Rank 1 of 5 &middot; New operator</span>
+      <span class="t" id="jTitle">Listing stills</span>
+      <span class="m"><span id="jWhere">Coastal estate &middot; South West coast</span><b id="jKit">Sub 250 g mini</b></span>
     </div>
-    <div class="chips">
-      <span class="ok">GPS</span><span>Sats <b>18</b></span><span>Link <b>98%</b></span><span>Battery <b id="bat">81%</b></span><span>Flight <b id="clock">06:42</b></span>
-    </div>
-    <div class="glass rules">
-      <span class="lab">Rules monitor</span>
-      <span class="row"><span>Height under 120 m</span><b>OK</b></span>
-      <span class="row"><span>Visual line of sight</span><b>OK</b></span>
-      <span class="row"><span>30 m from people</span><b>OK</b></span>
-      <span class="row"><span>Day only</span><b>OK</b></span>
-    </div>
-    <div class="glass tele"><b><span>H</span><i id="th">2.0</i> m</b><b><span>D</span><i id="td">110</i> m</b><b><span>H.S</span><i id="ts">0.0</i> m/s</b><b class="x"><span>V.S</span><i id="tv">0.0</i> m/s</b></div>
+    <div class="glass rules" id="rulesBox"><span class="lab">Rules monitor</span><span id="rulesRows"></span></div>
+    <ol class="ladder glass" id="ladder"></ol>
   </div>
   <button class="motion" id="motion" type="button" aria-pressed="false" hidden>Pause</button>
 </section>
@@ -447,9 +510,28 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
   </div>
 </section>
 
+<section class="sec" id="career">
+  <div class="wrap">
+    <div class="sh"><b>02</b><span>The career</span></div>
+    <div>
+      <div class="lead">
+        <h2>Five ranks, and more work opens at each one.</h2>
+        <p>Reputation comes from jobs done well, and it decides your rank. The first three promotions open the job board's tiers. The last two open the work that needs the most skill, and the light shows.</p>
+      </div>
+      <ol class="ranks">
+        <li><span class="n">Rank 1</span><h3>New operator</h3><span class="rep">From 0 reputation</span><span class="opens">12 kinds of job</span><p>Listing stills, paddock orthomosaics, club photos and a lost dog.</p></li>
+        <li><span class="n">Rank 2</span><h3>Contractor</h3><span class="rep">From 100</span><span class="opens">27 more</span><p>Tower antennas, solar thermal checks, wedding highlights and race nights. A show company asks you to crew one of its nights.</p></li>
+        <li><span class="n">Rank 3</span><h3>Established operator</h3><span class="rep">From 300</span><span class="opens">22 more</span><p>Crop health maps, nacelle and hub checks, facade washes and flood maps.</p></li>
+        <li><span class="n">Rank 4</span><h3>Specialist</h3><span class="rep">From 700</span><span class="opens">19 more</span><p>Pit walls, turbine blades, drone magnetics and night patrols. You can apply to fly light shows.</p></li>
+        <li><span class="n">Rank 5</span><h3>Chief pilot</h3><span class="rep">From 1,500</span><span class="opens">6 more</span><p>Night searches, fire ground thermal, flare plume sampling and stope scans. Festival, headline and New Year&rsquo;s Eve shows.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
 <section class="sec" id="site">
   <div class="wrap">
-    <div class="sh"><b>02</b><span>On site</span></div>
+    <div class="sh"><b>03</b><span>On site</span></div>
     <div>
       <div class="lead">
         <h2>You carry the aircraft from the case to the pad yourself.</h2>
@@ -482,7 +564,7 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 <section class="sec" id="map">
   <div class="wrap">
-    <div class="sh"><b>03</b><span>The map</span></div>
+    <div class="sh"><b>04</b><span>The map</span></div>
     <div>
       <div class="lead">
         <h2>Ten work sites, from the Perth Hills to the Pilbara coast.</h2>
@@ -510,7 +592,7 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 <section class="sec" id="air">
   <div class="wrap">
-    <div class="sh"><b>04</b><span>In the air</span></div>
+    <div class="sh"><b>05</b><span>In the air</span></div>
     <div>
       <div class="lead">
         <h2>You fly each kind of job differently.</h2>
@@ -533,7 +615,7 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 <section class="sec" id="hangar">
   <div class="wrap">
-    <div class="sh"><b>05</b><span>Hangar</span></div>
+    <div class="sh"><b>06</b><span>Hangar</span></div>
     <div>
       <div class="lead">
         <h2>Nine aircraft, from a 249&nbsp;g mini to a 12&nbsp;kg wash&nbsp;drone.</h2>
@@ -559,7 +641,7 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 <section class="sec" id="company">
   <div class="wrap">
-    <div class="sh"><b>06</b><span>The company</span></div>
+    <div class="sh"><b>07</b><span>The company</span></div>
     <div>
       <div class="lead">
         <h2>You start with a borrowed ute and end up with a hangar.</h2>
@@ -579,16 +661,56 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
         <div class="notes">
           <figure><img src="media/r-room-hangar-night.jpg" alt="Inside the company hangar, benches and parts shelves" loading="lazy"><figcaption><b>Rooms you walk into</b><p>The store, the shed, the office and the hangar.</p></figcaption></figure>
           <figure><img src="media/r-beauty-field-eye.jpg" alt="The training field from the pilot station at golden hour, gums along the boundary" loading="lazy"><figcaption><b>Neighbours</b><p>There are roos on the field, galahs in the gums and sheep on the farm.</p></figcaption></figure>
-          <figure><img src="media/sim-los-night.jpg" alt="A night operation at the field with the aircraft lights and strobe in the sky" loading="lazy"><figcaption><b>After dark</b><p>Night jobs need navigation lights and a strobe. Late in the career you can run light shows, and a bigger fleet wins bigger shows.</p></figcaption></figure>
+          <figure><img src="media/sim-los-night.jpg" alt="A night operation at the field with the aircraft lights and strobe in the sky" loading="lazy"><figcaption><b>After dark</b><p>Night jobs need navigation lights and a strobe. Light shows fly at night too, once you reach Specialist.</p></figcaption></figure>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<section class="sec shows" id="shows">
+  <div class="band">
+    <img src="media/show-heart.jpg" alt="A thousand show drones forming a heart over the ocean at night, seen from the foreshore lawn" loading="lazy">
+    <div class="wrap">
+      <div class="bandtxt">
+        <div class="sh"><b>08</b><span>Light shows</span></div>
+        <h2>The end game is a light show.</h2>
+        <p>Late in the career your money goes into show drones, because a bigger fleet can bid for bigger shows. Each show starts as a design in the studio and ends with you on a lawn at night, watching it fly.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="showgrid">
+      <div>
+        <table class="tiers">
+          <caption class="lab">Show tiers</caption>
+          <thead><tr><th>Show</th><th class="c">Drones</th><th class="c">Fee</th></tr></thead>
+          <tbody>
+            <tr><td>Private<small>Specialist</small></td><td class="c">100</td><td class="c">$25,000</td></tr>
+            <tr><td>Community<small>Specialist</small></td><td class="c">200</td><td class="c">$50,000</td></tr>
+            <tr><td>Festival<small>Chief pilot</small></td><td class="c">300</td><td class="c">$80,000</td></tr>
+            <tr><td>Headline<small>Chief pilot</small></td><td class="c">500</td><td class="c">$140,000</td></tr>
+            <tr><td>New Year&rsquo;s Eve<small>Chief pilot, after three good shows</small></td><td class="c">1,000</td><td class="c">$300,000</td></tr>
+          </tbody>
+        </table>
+        <p class="note">Show fees and kit prices are drafts in the game. Show drones come in packs of 50.</p>
+      </div>
+      <div>
+        <figure class="showpic"><img src="media/show-globe.jpg" alt="Show drones holding a glowing globe over the water at night" loading="lazy"><figcaption>A globe from the same show, a few formations earlier.</figcaption></figure>
+      </div>
+    </div>
+    <ul class="acts">
+        <li><b>Design it in the studio</b><p>Formations on a timeline set to music: rings, hearts, stars, spirals, a globe, a helix, words and your own outlines, with lights that sweep, twinkle or pulse on the beat.</p></li>
+        <li><b>Win it at tender</b><p>Bid against three rival show companies. Your reputation counts, and so does every show you flew well.</p></li>
+        <li><b>Fly it on the night</b><p>Place the show box clear of the crowd, where the wind cannot carry a failed drone toward people. Then watch from the lawn and make each call on the show console.</p></li>
+      </ul>
+
+  </div>
+</section>
+
 <section class="sec" id="academy">
   <div class="wrap">
-    <div class="sh"><b>07</b><span>Academy</span></div>
+    <div class="sh"><b>09</b><span>Academy</span></div>
     <div>
       <div class="lead">
         <h2>Learn the real rules, then fly by them.</h2>
@@ -607,8 +729,8 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
         <figure class="shot"><img src="media/app-debrief-pass.jpg" alt="A competent flight debrief, verified by server replay" loading="lazy"><figcaption>A checkride debrief, checked by replay.</figcaption></figure>
       </div>
       <div class="diag">
-        <figure><img src="media/three-nm-rule.svg" alt="Lesson diagram: the 3 nm rule around a controlled aerodrome, plan view" loading="lazy"><figcaption>The 3 nm rule around a controlled aerodrome, from the Australian lessons.</figcaption></figure>
-        <figure><img src="media/vlos-size.svg" alt="How big a 35 cm drone looks at 200, 400 and 600 metres" loading="lazy"><figcaption>How big a 35 cm drone looks at 200, 400 and 600 m. At 400 m it is a dot.</figcaption></figure>
+        <figure><img src="media/three-nm-rule.svg" alt="Lesson diagram: the 3 nm rule around a controlled aerodrome, plan view" loading="lazy"><figcaption>The 3 nm rule around a controlled aerodrome, from the Australian lessons.<span class="swipe"> Swipe sideways to see all of it.</span></figcaption></figure>
+        <figure><img src="media/vlos-size.svg" alt="How big a 35 cm drone looks at 200, 400 and 600 metres" loading="lazy"><figcaption>How big a 35 cm drone looks at 200, 400 and 600 m. At 400 m it is a dot.<span class="swipe"> Swipe sideways to see all of it.</span></figcaption></figure>
       </div>
       <p class="disc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>Training records only. Remote Pilot Academy is not a licence, certificate or approval issued by CASA, the FAA or Transport Canada, and it is not endorsed by them.</p>
     </div>
@@ -617,21 +739,21 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 <section class="end">
   <div class="wrap">
-    <div class="debrief" aria-label="Debrief of the pit wall inspection">
-      <div class="hd"><span class="lab">Debrief &middot; Pit wall inspection</span><b>COMPLETE</b></div>
+    <div class="debrief" aria-label="Debrief of the New Year’s Eve light show">
+      <div class="hd"><span class="lab">Debrief &middot; New Year&rsquo;s Eve light show</span><b>COMPLETE</b></div>
       <ul>
-        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Wall hazards found<em>5 / 5</em></li>
-        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Height under 120 m<em>OK</em></li>
-        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Visual line of sight<em>OK</em></li>
-        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Landed on pad A<em>OK</em></li>
-        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Defect report<em>Sent</em></li>
+        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Drones home<em>1,000 / 1,000</em></li>
+        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Spacing over 1.5 m<em>OK</em></li>
+        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>30 m crowd buffer<em>OK</em></li>
+        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Wind under 9 m/s<em>OK</em></li>
+        <li><svg class="tick" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>Show fee<em>$300,000</em></li>
       </ul>
     </div>
     <div class="next">
       <span class="lab">Next job &middot; the web demo</span>
       <h2>Fly your first job in a browser tab.</h2>
       <p>Remote Pilot Academy is in development, and a demo that runs in your web browser is coming. The name is a working name.</p>
-      <div class="row"><a href="https://andagainsoftware.com/">More from andAgainSoftware</a><a href="#top">Back to the pit</a></div>
+      <div class="row"><a class="cta" href="https://andagainsoftware.com/">More from andAgainSoftware</a><a href="#top">Watch the career again</a></div>
       <p class="specline">Plays with a gamepad, or an RC transmitter over USB. Up to four pilots in one free flight.</p>
     </div>
   </div>
@@ -647,69 +769,52 @@ footer p{font-size:12.5px;color:var(--text3);max-width:80ch}
 
 <script>
 (function () {
-  // ---- the live flight: the clip, the hazard tags and the HUD, all from the same frame number
-  var v = document.getElementById('hero'), stage = document.getElementById('stage');
-  var tagsEl = document.getElementById('tags'), found = document.getElementById('found'), meter = document.getElementById('meter');
-  var th = document.getElementById('th'), td = document.getElementById('td'), ts = document.getElementById('ts'), tv = document.getElementById('tv');
-  var bat = document.getElementById('bat'), clock = document.getElementById('clock'), btn = document.getElementById('motion');
+  // ---- the live flight: one job from each rank of the career, then the end game, with the HUD following the clip
+  var v = document.getElementById('hero'), stage = document.getElementById('stage'), btn = document.getElementById('motion');
+  var stage = document.querySelector('.stage');
+  var jobEl = document.querySelector('.job'), jRank = document.getElementById('jRank'), jTitle = document.getElementById('jTitle'), jWhere = document.getElementById('jWhere'), jKit = document.getElementById('jKit');
+  var rows = document.getElementById('rulesRows'), ladder = document.getElementById('ladder');
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var small = window.innerWidth <= 560;
-  var T = null, tags = [];
-  function fmt(n, d) { return n.toFixed(d); }
-  var flight = document.querySelector('.flight'), rulesEl = document.querySelector('.rules'), jobEl = document.querySelector('.job');
-  // a tag shows only where it is clear of the HUD panels and the edges, so no label is cut off or sits under a panel
-  function clear(el) {
-    var t = el.getBoundingClientRect(), f = flight.getBoundingClientRect(), x = t.left, y = t.top;
-    if (x < f.left + 30 || x > f.right - 160 || y < f.top + 40 || y > f.bottom - 76) return false;
-    var j = jobEl.getBoundingClientRect(); if (x < j.right + 12 && y < j.bottom + 34) return false;
-    if (rulesEl.offsetParent) { var q = rulesEl.getBoundingClientRect(); if (x > q.left - 190 && y < q.bottom + 34) return false; }
-    return true;
+  var DAY = [['Height under 120 m', 'OK'], ['Visual line of sight', 'OK'], ['30 m from people', 'OK'], ['Day only', 'OK']];
+  var SHOW = [['Spacing over 1.5 m', 'OK'], ['Wind under 9 m/s', 'OK'], ['30 m crowd buffer', 'OK'], ['One to many approval', 'Held']];
+  var RANKS = ['New operator', 'Contractor', 'Established operator', 'Specialist', 'Chief pilot', 'Light shows'];
+  var SEG = [
+    { t: 0, k: 0, fx: .48, title: 'Listing stills', where: 'Coastal estate \u00b7 South West coast', kit: 'Sub 250 g mini', rules: DAY },
+    { t: 2.5, k: 1, fx: .6, title: 'Solar thermal check', where: 'Energy park \u00b7 Mid West', kit: 'Inspection quad, thermal', rules: DAY },
+    { t: 5, k: 2, fx: .6, title: 'Crop health map', where: 'Farm \u00b7 Wheatbelt', kit: 'Camera quad', rules: DAY },
+    { t: 7.5, k: 3, fx: .62, title: 'Pit wall inspection', where: 'Goldfields pit \u00b7 Eastern Goldfields', kit: 'Inspection quad', rules: DAY },
+    { t: 10, k: 4, fx: .55, title: 'Flare plume sampling', where: 'Gas plant \u00b7 Pilbara coast', kit: 'Inspection quad', rules: DAY },
+    { t: 12.5, k: 5, fx: .5, title: 'New Year\u2019s Eve light show', where: 'Foreshore lawn \u00b7 South West coast', kit: '1,000 drones', rules: SHOW }
+  ];
+  ladder.innerHTML = RANKS.map(function (n) { return '<li><i></i><span>' + n + '</span></li>'; }).join('');
+  var steps = ladder.querySelectorAll('li'), cur = -1;
+  function show(n, quick) {
+    if (n === cur) return; cur = n;
+    var g = SEG[n];
+    stage.style.setProperty('--pfx', g.fx);
+    var fill = function () {
+      jRank.textContent = g.k < 5 ? 'Rank ' + (g.k + 1) + ' of 5 \u00b7 ' + RANKS[g.k] : 'The end game \u00b7 Chief pilot';
+      jTitle.textContent = g.title; jWhere.textContent = g.where; jKit.textContent = g.kit;
+      rows.innerHTML = g.rules.map(function (r) { return '<span class="row"><span>' + r[0] + '</span><b>' + r[1] + '</b></span>'; }).join('');
+      jobEl.classList.remove('swap');
+    };
+    for (var i = 0; i < steps.length; i++) { steps[i].classList.toggle('on', i === g.k); steps[i].classList.toggle('done', i < g.k); }
+    if (quick) fill(); else { jobEl.classList.add('swap'); setTimeout(fill, 180); }
   }
-  function draw(i) {
-    if (!T) return;
-    i = Math.max(0, Math.min(T.n - 1, i));
-    var k = 0;
-    for (var h = 0; h < T.hz.length; h++) {
-      var p = T.scr[i][h], z = T.hz[h], on = i >= z.at && p[0] > -0.05 && p[0] < 1.05 && p[1] > -0.05 && p[1] < 1.05;
-      if (i >= z.at) k++;
-      var el = tags[h];
-      el.style.left = (p[0] * 100) + '%';
-      el.style.top = (p[1] * 100) + '%';
-      el.classList.toggle('lo', p[1] < 0.3);
-      el.classList.toggle('on', on && clear(el));
-    }
-    found.textContent = k + ' / 5';
-    meter.style.width = (k * 20) + '%';
-    var f = T.tel[i];
-    th.textContent = fmt(f[0], 1); td.textContent = Math.round(f[1]); ts.textContent = fmt(f[2], 1); tv.textContent = fmt(f[3], 1);
-    var s = 402 + i / T.fps;
-    clock.textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(Math.floor(s % 60)).padStart(2, '0');
-    bat.textContent = Math.round(81 - i / T.n * 2) + '%';
-  }
+  function segAt(t) { var n = 0; for (var i = 0; i < SEG.length; i++) if (t >= SEG[i].t - 0.04) n = i; return n; }
   function loop() {
-    if (T && v.readyState >= 2) draw(Math.floor(v.currentTime * T.fps));
+    if (v.readyState >= 2) show(segAt(v.currentTime));
     if (!v.paused) requestAnimationFrame(loop);
   }
-  fetch('media/hero-track.json').then(function (r) { return r.json(); }).then(function (t) {
-    T = t;
-    for (var h = 0; h < T.hz.length; h++) {
-      var d = document.createElement('div');
-      d.className = 'tag';
-      d.innerHTML = '<div class="box"></div><div class="tx">' + T.hz[h].label + '<small>' + (h + 1) + ' / 5</small></div>';
-      tagsEl.appendChild(d); tags.push(d);
-    }
-    // the poster is a frame from the middle of the flight; the HUD and tags start there, and so does the clip
-    var start = T.poster || 0;
-    draw(start);
-    v.addEventListener('play', function () { stage.querySelector('.poster').style.visibility = 'hidden'; btn.hidden = false; requestAnimationFrame(loop); });
-    if (reduce) { btn.textContent = 'Play'; btn.setAttribute('aria-pressed', 'true'); btn.hidden = false; return; }
-    v.src = small ? 'media/hero-960.mp4' : 'media/hero.mp4';
-    v.addEventListener('loadedmetadata', function () { try { v.currentTime = start / T.fps; } catch (e) {} }, { once: true });
-    var p = v.play(); if (p && p.catch) p.catch(function () {});
-  }).catch(function () {});
+  show(0, true);
+  v.addEventListener('play', function () { stage.querySelector('.poster').style.visibility = 'hidden'; btn.hidden = false; requestAnimationFrame(loop); });
+  var src = function () { if (!v.getAttribute('src')) v.src = small ? 'media/hero-960.mp4' : 'media/hero.mp4'; };
+  if (reduce) { btn.textContent = 'Play'; btn.setAttribute('aria-pressed', 'true'); btn.hidden = false; }
+  else { src(); var p0 = v.play(); if (p0 && p0.catch) p0.catch(function () {}); }
   btn.addEventListener('click', function () {
-    if (!v.getAttribute('src')) { v.src = small ? 'media/hero-960.mp4' : 'media/hero.mp4'; if (T && T.poster) v.addEventListener('loadedmetadata', function () { try { v.currentTime = T.poster / T.fps; } catch (e) {} }, { once: true }); }
+    src();
     if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); btn.textContent = 'Pause'; btn.setAttribute('aria-pressed', 'false'); }
     else { v.pause(); btn.textContent = 'Play'; btn.setAttribute('aria-pressed', 'true'); }
   });
